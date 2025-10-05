@@ -65,13 +65,14 @@ const problemSchema = new mongoose.Schema({
 });
 
 // Virtual for upvote count
+// Virtual for upvote count
 problemSchema.virtual('upvoteCount').get(function() {
-  return this.upvotes.length;
+  return (this.upvotes || []).length;
 });
 
 // Virtual for downvote count
 problemSchema.virtual('downvoteCount').get(function() {
-  return this.downvotes.length;
+  return (this.downvotes || []).length;
 });
 
 // Ensure virtual fields are serialized
