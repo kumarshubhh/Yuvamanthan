@@ -76,6 +76,7 @@ interface Solution {
 }
 
 const ProblemDetail: React.FC = () => {
+  const BASE_URL = 'https://yuvamanthan.onrender.com';
   const { id } = useParams<{ id: string }>();
   const [problem, setProblem] = useState<Problem | null>(null);
   const [solutions, setSolutions] = useState<Solution[]>([]);
@@ -97,7 +98,7 @@ const ProblemDetail: React.FC = () => {
 
   const fetchProblem = async () => {
     try {
-      const response = await axios.get(`/api/problems/${id}`);
+      const response = await axios.get(`${BASE_URL}/api/problems/${id}`);
       setProblem(response.data);
     } catch (error) {
       toast.error('Failed to fetch problem details');
@@ -106,7 +107,7 @@ const ProblemDetail: React.FC = () => {
 
   const fetchSolutions = async () => {
     try {
-      const response = await axios.get(`/api/problems/${id}/solutions`);
+      const response = await axios.get(`${BASE_URL}/api/problems/${id}/solutions`);
       setSolutions(response.data.solutions);
     } catch (error) {
       toast.error('Failed to fetch solutions');
@@ -119,7 +120,7 @@ const ProblemDetail: React.FC = () => {
     if (!problem) return;
 
     try {
-      const response = await axios.post(`/api/problems/${problem._id}/vote`, { voteType });
+      const response = await axios.post(`${BASE_URL}/api/problems/${problem._id}/vote`, { voteType });
       setProblem({
         ...problem,
         upvotes: response.data.upvotes,
@@ -134,7 +135,7 @@ const ProblemDetail: React.FC = () => {
 
   const handleSolutionVote = async (solutionId: string, voteType: 'upvote' | 'downvote' | 'remove') => {
     try {
-      const response = await axios.post(`/api/solutions/${solutionId}/vote`, { voteType });
+      const response = await axios.post(`${BASE_URL}/api/solutions/${solutionId}/vote`, { voteType });
       
       setSolutions(solutions.map(solution => 
         solution._id === solutionId 
@@ -159,7 +160,7 @@ const ProblemDetail: React.FC = () => {
     }
 
     try {
-      await axios.post('/api/solutions', {
+      await axios.post(`${BASE_URL}/api/solutions`, {
         ...newSolution,
         problem: id
       });

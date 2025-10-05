@@ -56,6 +56,7 @@ const Dashboard: React.FC = () => {
   ];
 
   const statuses = ['Open', 'In Progress', 'Resolved', 'Closed'];
+  const BASE_URL = 'https://yuvamanthan.onrender.com';
 
   useEffect(() => {
     fetchProblems();
@@ -80,7 +81,7 @@ const Dashboard: React.FC = () => {
 
   const handleVote = async (problemId: string, voteType: 'upvote' | 'downvote' | 'remove') => {
     try {
-      const response = await axios.post(`/api/problems/${problemId}/vote`, { voteType });
+      const response = await axios.post(`${BASE_URL}/api/problems/${problemId}/vote`, { voteType });
       
       setProblems(problems.map(problem => 
         problem._id === problemId 

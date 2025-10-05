@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 
+// ✅ Backend Base URL (deployed)
+const API_BASE_URL = "https://yuvamanthan.onrender.com";
+
+// Set Axios base URL globally
+axios.defaults.baseURL = API_BASE_URL;
+
 // Types
 interface User {
   id: string;
@@ -87,7 +93,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Set up axios defaults
+  // Axios default Authorization setup
   useEffect(() => {
     if (state.token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
@@ -108,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             type: 'AUTH_SUCCESS',
             payload: { user: response.data.user, token: state.token },
           });
-        } catch (error) {
+        } catch {
           dispatch({ type: 'AUTH_FAILURE' });
         }
       } else {
@@ -119,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadUser();
   }, []);
 
+  // Login
   const login = async (email: string, password: string) => {
     dispatch({ type: 'AUTH_START' });
     try {
@@ -133,6 +140,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Register
   const register = async (name: string, email: string, password: string) => {
     dispatch({ type: 'AUTH_START' });
     try {
@@ -147,10 +155,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Logout
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
   };
 
+  // Update profile
   const updateProfile = async (data: Partial<User>) => {
     try {
       const response = await axios.put('/api/auth/profile', data);
@@ -171,7 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook to use auth context
+// Custom hook
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
@@ -179,4 +189,3 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
-
